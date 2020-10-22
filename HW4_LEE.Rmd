@@ -1,0 +1,54 @@
+---
+title: "HW4"
+author: "SUNNY LEE"
+date: "10/22/2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1: Royal Blood
+
+```{r}
+RoyalBlood <- function() {
+  nums <- 1:1000
+  nums <- ifelse(nums %% 3 == 0 & nums %% 5 == 0, "Royal Blood",
+                 ifelse(nums %% 3 == 0, "Royal",
+                        ifelse(nums %% 5 == 0, "Blood", nums)))
+  cat(nums, sep = ", ")
+}
+RoyalBlood()
+```
+
+## Problem 2: Let's get things in order
+
+```{r}
+OrderIt <- function(a) {
+  n <- length(a)
+  swapped <- TRUE
+  # repeat until we don't have to swap
+  while(swapped) {
+    swapped <- FALSE
+    for(i in 1:(n-1)) {
+      # if element i is larger than element (i+1), swap them and set swapped to TRUE
+      if(a[i] > a[i+1]) {
+        el1 <- a[i]
+        el2 <- a[i+1]
+        a[i] <- el2
+        a[i+1] <- el1
+        swapped <- TRUE
+      }
+    }
+  }
+  # return ordered vector
+  return(a)
+}
+
+# test the function
+a <- sample(1:20)
+a
+OrderIt(a)
+```
+
+.
