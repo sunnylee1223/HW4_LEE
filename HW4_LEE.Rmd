@@ -51,4 +51,88 @@ a
 OrderIt(a)
 ```
 
-.
+
+## Problem 3: To the bare minimum
+
+```{r}
+# set seed for reproducible results
+set.seed(123)
+delta <- 10^(-5)
+# function to minimize
+func <- function(x) x^2 - 2*x + 1
+# starting points
+x1 <- -1
+x3 <- 3
+# randomly select a value for x2 such that x1 < x2 < x3
+x2 <- runif(1, min = x1, max = x3)
+# the current triplet of points
+x_current <- c(x1, x2, x3)
+repeat {
+  # distance between x1 and x2
+  a <- x_current[2] - x_current[1]
+  # distance between x2 and x3
+  b <- x_current[3] - x_current[2]
+  # if range a is larger than b
+  if(a > b) {
+    # randomly pick a point x4 such that x1 < x4 < x2
+    x4 <- runif(1, min = x_current[1], max = x_current[2])
+    # external points are f1 and f2
+    external_points <- c(func(x_current[1]), func(x_current[2]))
+  } else {
+    # if range b is larger than a, pick a point x4 such that x2 < x4 < x3
+    x4 <- runif(1, min = x_current[2], max = x_current[3])
+    # external points are f2 and f3
+    external_points <- c(func(x_current[2]), func(x_current[3]))
+  }
+  # evaluate the function in point x4
+  f4 <- func(x4)
+  # if f4 is larger than one of the external points in the current triplet
+  if(any(f4 > external_points)) {
+    # new triplet of points becomes (x1, x2, x4) if b was larger than a
+    if(b > a) {
+      x_new <- c(x_current[1], x_current[2], x4)
+    } else {
+      # new triplet of points becomes (x4, x2, x3) if a was larger than b
+      x_new <- c(x4, x_current[2], x_current[3])
+    }
+  } else {
+    # if f4 is smaller than both external points,
+    # new triplet of points becomes (x2, x4, x3) if b was larger than a
+    if(b > a) {
+      x_new <- c(x_current[2], x4, x_current[3])
+    } else {
+      # new triplet of points becomes (x1, x4, x2) if a was larger than b
+      x_new <- c(x_current[1], x4, x_current[2])
+    }
+  }
+  # function values in the central points of each triplet
+  f_current <- func(x_current[2])
+  f_new <- func(x_new[2])
+  # if the absolute difference between f_current and f_new is higher than delta or equals 0
+  if(abs(f_current - f_new) > delta | abs(f_current - f_new) == 0) {
+    # repeat using the new triplet as the current triplet
+    x_current <- x_new
+  } else{
+    # otherwise stop the algorithm and output the central point in new triplet
+    x_min <- x_new[2]
+    break
+  }
+}
+x_min
+```
+
+Find the true minimum of the function:
+
+$f(x) = x^2 - 2x + 1$
+
+$f'(x) = 2x - 2$
+
+$f'(x) = 0$
+
+$2x - 2 = 0$
+
+$2x = 2$
+
+$x = 1$
+
+The true minimum of the functions is x = 1. The solution found by the algorithm is close to the true minimum but not exactly the same.
